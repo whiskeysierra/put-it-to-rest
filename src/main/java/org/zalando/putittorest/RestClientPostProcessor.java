@@ -166,6 +166,10 @@ public class RestClientPostProcessor implements BeanDefinitionRegistryPostProces
         if (registry.isRegistered("logbookHttpResponseInterceptor")) {
             builder.addPropertyValue("lastResponseInterceptors", Registry.list(Registry.ref("logbookHttpResponseInterceptor")));
         }
+
+        if (registry.isRegistered("zmonMetricsWrapper")) {
+            builder.addPropertyValue("metricsWrapper", Registry.ref("zmonMetricsWrapper"));
+        }
     }
 
     @Override
