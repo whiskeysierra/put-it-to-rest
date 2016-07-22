@@ -1,5 +1,6 @@
 package org.zalando.putittorest;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Throwables;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hobsoft.hamcrest.compose.ComposeMatchers.compose;
 import static org.hobsoft.hamcrest.compose.ComposeMatchers.hasFeature;
+import static org.mockito.Mockito.mock;
 
 public final class AccessTokensMissingTest {
 
@@ -28,6 +30,11 @@ public final class AccessTokensMissingTest {
         @Primary
         public HttpMessageConverters httpMessageConverters() {
             return new HttpMessageConverters();
+        }
+
+        @Bean
+        public MetricRegistry metricRegistry() {
+            return mock(MetricRegistry.class);
         }
 
     }
