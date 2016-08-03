@@ -21,6 +21,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.util.DefaultUriTemplateHandler;
 import org.springframework.web.util.UriTemplateHandler;
+import org.zalando.putittorest.zmon.ZmonRequestInterceptor;
+import org.zalando.putittorest.zmon.ZmonResponseInterceptor;
 import org.zalando.riptide.Rest;
 import org.zalando.riptide.httpclient.RestAsyncClientHttpRequestFactory;
 import org.zalando.riptide.stream.Streams;
@@ -175,6 +177,7 @@ public class RestClientPostProcessor implements BeanDefinitionRegistryPostProces
 
     private void configureInterceptors(final BeanDefinitionBuilder builder, final String id, @Nullable final OAuth oauth) {
         final List<Object> requestInterceptors = list();
+        final List<Object> responseInterceptors = list();
 
         if (oauth != null) {
             requestInterceptors.add(genericBeanDefinition(AccessTokensRequestInterceptor.class)
@@ -185,9 +188,18 @@ public class RestClientPostProcessor implements BeanDefinitionRegistryPostProces
 
         requestInterceptors.add(ref("tracerHttpRequestInterceptor"));
 
-        builder.addPropertyValue("firstRequestInterceptors", requestInterceptors);
-        builder.addPropertyValue("lastRequestInterceptors", list(ref("logbookHttpRequestInterceptor")));
-        builder.addPropertyValue("lastResponseInterceptors", list(ref("logbookHttpResponseInterceptor")));
+        if (registry.isRegistered("zmonMetricsWrapper")) {
+            requestInterceptors.add(genericBeanDefinition(ZmonRequestInterceptor.class).getBeanDefinition());
+            responseInterceptors.add(genericBeanDefinition(ZmonResponseInterceptor.class)
+                    .addConstructorArgValue(ref("zmonMetricsWrapper"))
+                    .getBeanDefinition());
+        }
+
+        requestInterceptors.add(ref("logbookHttpRequestInterceptor"));
+        responseInterceptors.add(ref("logbookHttpResponseInterceptor"));
+
+        builder.addPropertyValue("requestInterceptors", requestInterceptors);
+        builder.addPropertyValue("responseInterceptors", responseInterceptors);
     }
 
     @Override
