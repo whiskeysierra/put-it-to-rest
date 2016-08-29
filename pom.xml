@@ -58,6 +58,7 @@
         <riptide.version>2.0.0-RC3</riptide.version>
         <logbook.version>1.0.0-RC3</logbook.version>
         <tracer.version>0.9.0</tracer.version>
+        <zmon.version>0.9.7</zmon.version>
     </properties>
 
     <dependencyManagement>
@@ -153,6 +154,12 @@
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>${logbook.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.zalando.zmon</groupId>
+            <artifactId>zmon-actuator</artifactId>
+            <version>${zmon.version}</version>
+            <optional>true</optional>
+        </dependency>
 
         <!-- testing -->
         <dependency>
@@ -199,6 +206,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hobsoft.hamcrest</groupId>
+            <artifactId>hamcrest-compose</artifactId>
+            <version>0.3.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

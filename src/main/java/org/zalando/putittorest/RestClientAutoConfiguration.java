@@ -11,10 +11,12 @@ import org.zalando.tracer.spring.TracerAutoConfiguration;
 
 @Configuration
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
-@AutoConfigureAfter({
+@AutoConfigureAfter(value = {
         JacksonAutoConfiguration.class,
         LogbookAutoConfiguration.class,
         TracerAutoConfiguration.class,
+}, name = {
+        "ZmonMetricFilterAutoConfiguration"
 })
 public class RestClientAutoConfiguration {
 
